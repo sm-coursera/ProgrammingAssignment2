@@ -1,5 +1,36 @@
-## Put comments here that give an overall description of what your
-## functions do
+################################################
+#                                              #
+#  Programming Assignment 2 for R Programming  #
+#  Stephen Martin                              #
+#                                              #
+#  Demonstrates the technique of using the     #
+#  <<- operator to capture a reference to a    #
+#  local variable in the environment of a      #
+#  function so subsequent calls to the         #
+#  function can access these values.           #
+#                                              #
+#  The function makeCacheMatrix takes a        #
+#  matrix and returns a cache object with      #
+#  references to the originally passed in      #
+#  matrix as well as a cached matrix that      #
+#  has been processed from the original        #
+#  as required by whatever function uses       #
+#  the cache object.                           #
+#                                              #
+#  The cacheSolve function uses a cached       #
+#  matrix object returned by the               #
+#  makeCacheMatrix function to calculate the   #
+#  inverse of the original matrix and then     #
+#  cache the resulting inverse to avoid        #
+#  recalculating it on any subsequent calls.   #
+#                                              #
+#  The basicCacheTest function demonstrates    #
+#  how the first two methods could be used as  #
+#  well as testing against a random matrix to  #
+#  ensure the cached matrix object and the     #
+#  cacheSolve function work as intended.       #
+#                                              #
+################################################
 
 
 ## Given a matrix this function returns a list containing
@@ -51,9 +82,9 @@ cacheSolve <- function(x, ...) {
 }
 
 
-## Test method for matrix caching
+## Test method for matrix caching.
 basicCacheTest <- function(){
-    #Create 1000 X 1000 matrix
+    #Create 1000 X 1000 matrix of random integers between 1 and 2^32
     randomMatrix <- matrix(sample.int(2^32, 1000000), nrow = 1000, ncol = 1000)
     
     #Create cache object
@@ -61,6 +92,7 @@ basicCacheTest <- function(){
     
     inverseMatrix <- NULL
     
+    print("Executing first access to inverse matrix")
     #Store the amount of time it takes to retrieve the
     #inverse matrix when nothing is cached
     nonCacheTime <- system.time({
@@ -69,6 +101,8 @@ basicCacheTest <- function(){
     print(nonCacheTime)
     
     cachedInverse <- NULL
+
+    print("Executing second access to inverse matrix")
     #Store the amount of time it takes to retrieve the
     #inverse matrix when it is cached
     cacheTime <- system.time({
