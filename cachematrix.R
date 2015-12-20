@@ -36,7 +36,7 @@ makeCacheMatrix <- function(x = matrix()) {
 
 ## Given a matrix cache as returned by the makeCacheMatrix 
 ## function this function returns the inverse of the original 
-## matrix and caches that inverrse for future calls, if necessary.
+## matrix and caches that inverse for future calls, if necessary.
 cacheSolve <- function(x, ...) {
     # Retrieve the cached matrix
     inverseOfX <- x$getCachedValue();
@@ -50,3 +50,40 @@ cacheSolve <- function(x, ...) {
     inverseOfX
 }
 
+
+## Test method for matrix caching
+basicCacheTest <- function(){
+    #Create 1000 X 1000 matrix
+    randomMatrix <- matrix(sample.int(2^32, 1000000), nrow = 1000, ncol = 1000)
+    
+    #Create cache object
+    cacheObject <- makeCacheMatrix(randomMatrix)
+    
+    inverseMatrix <- NULL
+    
+    #Store the amount of time it takes to retrieve the
+    #inverse matrix when nothing is cached
+    nonCacheTime <- system.time({
+        inverseMatrix <<- cacheSolve(cacheObject)
+    })
+    print(nonCacheTime)
+    
+    cachedInverse <- NULL
+    #Store the amount of time it takes to retrieve the
+    #inverse matrix when it is cached
+    cacheTime <- system.time({
+        cachedInverse <<- cacheSolve(cacheObject)
+    })
+    print(cacheTime)
+    
+    #Check that the two inverses are in fact the same.
+    if(!identical(inverseMatrix, cachedInverse)){
+        stop("Original inverted matrix and matrix retrieved from cache are not the same.")
+    }
+          
+    if(nonCacheTime[3] <= cacheTime[3]){
+        stop("Retrieving inverted matrix from cache took as long or longer than original inversion.")
+    }
+    
+}
+    
